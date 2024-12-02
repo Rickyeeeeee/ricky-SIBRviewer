@@ -48,7 +48,7 @@ namespace sibr
 
 		/** Default constructor. */
 		InputCamera() :
-			_focal(0.f), _k1(0.f), _k2(0.f), _w(0), _h(0), _id(0), _active(true)
+			_focal(0.f), _k1(0.f), _k2(0.f), _w(0), _h(0), _id(0), _active(true), _is_test(false)
 		{ }
 
 		/** Partial constructor
