@@ -602,6 +602,9 @@ namespace sibr
 			for (const auto& inputCam : _scene->cameras()->inputCameras()) {
 				const bool isUsed = _scene->cameras()->isCameraUsedForRendering(index);
 				_cameras.push_back(CameraInfos(*inputCam, inputCam->id(), isUsed));
+				if (inputCam->is_test()) {
+					_non_used_cams->merge(*generateCamFrustum(*inputCam, 0.0f, _pathScaling));
+				}
 
 				if (inputCam->isActive())
 					(isUsed ? _used_cams : _non_used_cams)->merge(*generateCamFrustum(*inputCam, 0.0f, _pathScaling));

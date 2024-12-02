@@ -135,6 +135,11 @@ namespace sibr
 		 */
 		inline void					name( const std::string& s ) { _name = s; }
 
+		// Custom
+		inline void 				is_test(bool test) { _is_test = test; }
+
+		inline bool 				is_test() const { return _is_test; }	
+
 		/** Update image dimensions. Calls \a update() after changing image width and height
 		* \param w image width
 		* \param h image height
@@ -328,6 +333,7 @@ namespace sibr
 		uint _h; ///< Image height
 		std::string _name; ///< Input image name
 		bool _active; ///< is the camera currently in use.
+		bool _is_test;
 	};
 
 } // namespace sibr

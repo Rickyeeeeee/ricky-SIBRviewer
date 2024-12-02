@@ -1472,6 +1472,7 @@ namespace sibr
 		{
 			int id = frames[i].get("id").get<double>();
 			std::string imgname = frames[i].get("img_name").get<std::string>();
+			bool is_test = frames[i].get("is_test").get<bool>();
 			int width = frames[i].get("width").get<double>();
 			int height = frames[i].get("height").get<double>();
 			float fy = frames[i].get("fy").get<double>();
@@ -1505,6 +1506,7 @@ namespace sibr
 			camera->rotation(sibr::Quaternionf(orientation));
 			camera->znear(zNear);
 			camera->zfar(zFar);
+			camera->is_test(is_test);
 			cameras.push_back(camera);
 		}
 		return cameras;
