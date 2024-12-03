@@ -150,8 +150,8 @@ namespace sibr
 		float						_alphaImage = 0.5f; ///< Opacity shared value.
 
 		RenderTargetRGBA32F::Ptr			_imgRt;
-		float								_userCameraScaling = 3.f; ///< User camera scaling.
-		float								_pathScaling = 0.3f; ///< Input cameras scaling.
+		float								_userCameraScaling = 1.f; ///< User camera scaling.
+		float								_pathScaling = 0.1f; ///< Input cameras scaling.
 		float								_lastPathScaling = 0.2f;
 		std::string							_imgToFetch = "";
 		uint								_imgTexHandle;

@@ -445,6 +445,7 @@ namespace sibr
 			ImGui::InputFloat("User camera scale", &_userCameraScaling, 0.1f, 10.0f);
 			_pathScaling = std::max(0.001f, _pathScaling);
 			_userCameraScaling = std::max(0.001f, _userCameraScaling);
+			
 
 			ImGui::Checkbox("Draw labels ", &_showLabels);
 			if (_showLabels) {
@@ -606,7 +607,7 @@ namespace sibr
 					_non_used_cams->merge(*generateCamFrustum(*inputCam, 0.0f, _pathScaling));
 				}
 
-				if (inputCam->isActive())
+				else if (inputCam->isActive())
 					(isUsed ? _used_cams : _non_used_cams)->merge(*generateCamFrustum(*inputCam, 0.0f, _pathScaling));
 				index++;
 			}
