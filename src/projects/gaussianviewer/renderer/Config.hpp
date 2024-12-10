@@ -44,6 +44,7 @@ namespace sibr {
 		virtual BasicIBRAppArgs {
 		RequiredArg<std::string> modelPath = { "model-path", "Model directory" };
 		RequiredArg<std::string> modelPathShort = { "m", "Model directory" };
+		Arg<std::string> secondaryPath = { "secondary-path", "", "Secondary model directory" };
 		RequiredArg<std::string> iteration = { "iteration", "Iteration to load from model" };
 		RequiredArg<std::string> pathShort = {"s", "path to the dataset root"};
 		Arg<int> device = {"device", 0, "CUDA device index"};

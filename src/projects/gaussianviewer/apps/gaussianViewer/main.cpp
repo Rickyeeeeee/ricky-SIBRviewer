@@ -119,6 +119,8 @@ int main(int ac, char** av)
 
 	const char* toload = myArgs.modelPath.get().c_str();
 
+	const char* toload2 = myArgs.secondaryPath.get().c_str();
+
 	// Window setup
 	sibr::Window		window(PROGRAM_NAME, sibr::Vector2i(50, 50), myArgs, getResourcesDirectory() + "/gaussians/" + PROGRAM_NAME + ".ini");
 
@@ -140,6 +142,8 @@ int main(int ac, char** av)
 		SIBR_ERR << "Could not find config file 'cfg_args' at " << myArgs.modelPath.get();
 	}
 	std::getline(cfgFile, cfgLine);
+
+	bool hasSecondary = myArgs.secondaryPath.get() != "";
 
 	if (!myArgs.dataset_path.isInit())
 	{
@@ -212,6 +216,25 @@ int main(int ac, char** av)
 	const unsigned int sceneResHeight = usedResolution.y();
 
 	// Create the ULR view.
+	GaussianView::Ptr	gaussianView2;
+	std::string plyfile2 = myArgs.secondaryPath.get();
+	if (hasSecondary)
+	{
+		if (plyfile2.back() != '/')
+			plyfile2 += "/";
+		plyfile2 += "point_cloud";
+		if (!myArgs.iteration.isInit())
+		{
+			plyfile2 += "/" + findLargestNumberedSubdirectory(plyfile2) + "/point_cloud.ply";
+		}
+		else
+		{
+			plyfile2 += "/iteration_" + myArgs.iteration.get() + "/point_cloud.ply";
+		}
+		std::cout << "Loading secondary view" << std::endl;
+		std::cout << "Secondary path: " << plyfile2 << std::endl;
+		gaussianView2.reset(new GaussianView(scene, sceneResWidth, sceneResHeight, plyfile2.c_str(), &messageRead, sh_degree, white_background, !myArgs.noInterop, device));
+	}
 	GaussianView::Ptr	gaussianView(new GaussianView(scene, sceneResWidth, sceneResHeight, plyfile.c_str(), &messageRead, sh_degree, white_background, !myArgs.noInterop, device));
 
 	// Raycaster.
@@ -229,8 +252,18 @@ int main(int ac, char** av)
 	if (myArgs.rendering_mode == 1) 
 		multiViewManager.renderingMode(IRenderingMode::Ptr(new StereoAnaglyphRdrMode()));
 	
-	multiViewManager.addIBRSubView("Point view", gaussianView, usedResolution, ImGuiWindowFlags_ResizeFromAnySide | ImGuiWindowFlags_NoBringToFrontOnFocus);
-	multiViewManager.addCameraForView("Point view", generalCamera);
+	std::string view1Name = plyfile;
+	std::string view2Name = plyfile2;
+
+	multiViewManager.addIBRSubView(view1Name.c_str(), gaussianView, usedResolution, ImGuiWindowFlags_ResizeFromAnySide | ImGuiWindowFlags_NoBringToFrontOnFocus);
+	if (hasSecondary)
+	{
+		multiViewManager.addIBRSubView(view2Name.c_str(), gaussianView2, usedResolution, ImGuiWindowFlags_ResizeFromAnySide | ImGuiWindowFlags_NoBringToFrontOnFocus);
+		std::cout << "Added secondary view" << std::endl;
+
+	}
+	multiViewManager.addCameraForView(view1Name.c_str(), generalCamera);
+	multiViewManager.addCameraForView(view2Name.c_str(), generalCamera);
 
 	// Top view
 	const std::shared_ptr<sibr::SceneDebugView> topView(new sibr::SceneDebugView(scene, generalCamera, myArgs, myArgs.imagesPath.get()));
@@ -243,7 +276,7 @@ int main(int ac, char** av)
 	if (myArgs.pathFile.get() !=  "" ) 
 	{
 		generalCamera->getCameraRecorder().loadPath(myArgs.pathFile.get(), usedResolution.x(), usedResolution.y());
-		generalCamera->getCameraRecorder().recordOfflinePath(myArgs.outPath, multiViewManager.getIBRSubView("Point view"), "");
+		generalCamera->getCameraRecorder().recordOfflinePath(myArgs.outPath, multiViewManager.getIBRSubView(view1Name.c_str()), "");
 		if( !myArgs.noExit )
 			exit(0);
 	}
